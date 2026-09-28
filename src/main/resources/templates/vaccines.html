@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vaccine Types | PetCareBook</title><link rel="stylesheet" th:href="@{/css/style.css}"></head>
+<body><div class="page vaccine-page">
+<nav class="navbar"><a class="brand" href="/"><span class="brand-mark">PC</span><span>PetCareBook</span></a>
+<div class="user-welcome" th:if="${session.loggedInFullName != null}" th:text="${session.loggedInFullName}">User</div><div class="nav-links"><a href="/">Dashboard</a><a href="/owners">Owners</a><a href="/pets">Pets</a><a class="active" href="/vaccines">Vaccine Types</a><form class="nav-logout" method="post" action="/logout">
+                <button type="submit" title="Sign out">Sign out</button>
+            </form></div></nav>
+
+<p class="eyebrow">Preventive care configuration</p><h1 class="page-heading">Vaccine & care types</h1>
+<p class="subtitle"><span class="account-scope">Only records belonging to your signed-in account are shown.</span> Manage reusable vaccine types and the intervals used to calculate each pet's next due date.</p>
+
+<div th:if="${successMessage}" class="notice notice-success"><span class="notice-icon">✓</span><div><strong>Success</strong><span th:text="${successMessage}">Saved successfully.</span></div></div>
+<div th:if="${errorMessage}" class="notice notice-error"><span class="notice-icon">!</span><div><strong>Action failed</strong><span th:text="${errorMessage}">Something went wrong.</span></div></div>
+
+<div class="card form-card vaccine-form-card" th:if="${editVaccine == null}">
+<div class="form-heading"><div class="form-heading-icon">+</div><div><h2>Add vaccine type</h2><p>Create a reusable vaccine or preventive-care type.</p></div></div>
+<form method="post" action="/ui/vaccines" class="vaccine-form">
+<div class="field"><label>Vaccine name *</label><input name="vaccineName" required maxlength="100" placeholder="e.g. Rabies, DHPP, FVRCP"></div>
+<div class="field"><label>Description</label><textarea name="description" maxlength="2000" rows="3" placeholder="Briefly describe what this type covers."></textarea></div>
+<div class="field"><label>Interval *</label><div class="input-with-suffix"><input type="number" name="intervalDays" min="1" required placeholder="365"><span>days</span></div></div>
+<div class="form-actions vaccine-form-actions"><button class="btn btn-primary vaccine-add-btn" type="submit">Add Vaccine Type</button></div>
+</form></div>
+
+<div class="card form-card vaccine-form-card" th:if="${editVaccine != null}">
+<div class="form-heading"><div class="form-heading-icon">EDIT</div><div><h2>Edit vaccine type</h2><p>Updating vaccine type ID <strong th:text="${editVaccine.vaccineTypeId}">1</strong>.</p></div></div>
+<form method="post" th:action="@{'/ui/vaccines/' + ${editVaccine.vaccineTypeId} + '/update'}" class="vaccine-form">
+<div class="field"><label>Vaccine name *</label><input name="vaccineName" required maxlength="100" th:value="${editVaccine.vaccineName}"></div>
+<div class="field"><label>Description</label><textarea name="description" maxlength="2000" rows="3" th:text="${editVaccine.description}"></textarea></div>
+<div class="field"><label>Interval *</label><div class="input-with-suffix"><input type="number" name="intervalDays" min="1" required th:value="${editVaccine.intervalDays}"><span>days</span></div></div>
+<div class="form-actions vaccine-form-actions"><button class="btn btn-primary" type="submit">Save Changes</button><a class="btn btn-secondary" href="/vaccines">Cancel</a></div>
+</form></div>
+
+<div class="section-heading-row"><div><p class="eyebrow">Configured library</p><h2 class="section-title">Vaccine & care types</h2></div>
+<div class="count-pill"><span th:text="${vaccines.size()}">5</span> configured</div></div>
+
+<div th:if="${#lists.isEmpty(vaccines)}" class="card empty"><h3>No vaccine types configured</h3><p>Add the first type above.</p></div>
+<div th:unless="${#lists.isEmpty(vaccines)}" class="vaccine-table-card"><div class="table-wrap vaccine-table-wrap"><table class="vaccine-table">
+<thead><tr><th>ID</th><th>Vaccine / Care Type</th><th>Interval</th><th>Description</th><th>Actions</th></tr></thead>
+<tbody><tr th:each="v : ${vaccines}">
+<td><span class="id-badge" th:text="${v.vaccineTypeId}">1</span></td>
+<td class="food-name" th:text="${v.vaccineName}">Rabies</td>
+<td><span class="badge badge-yes" th:text="${v.intervalDays + ' days'}">365 days</span></td>
+<td class="description-cell" th:text="${v.description != null ? v.description : '—'}">Description</td>
+<td><div class="row-actions"><a class="btn btn-small btn-secondary" th:href="@{'/vaccines?edit=' + ${v.vaccineTypeId}}">Edit</a>
+<form method="post" th:action="@{'/ui/vaccines/' + ${v.vaccineTypeId} + '/delete'}" onsubmit="return confirm('Delete this vaccine type? It cannot be deleted if vaccination records use it.');">
+<button class="btn btn-small btn-danger" type="submit">Delete</button></form></div></td>
+</tr></tbody></table></div></div>
+<div class="footer">PetCareBook • Spring Boot + Spring Data JPA + MySQL + Thymeleaf</div>
+</div></body></html>

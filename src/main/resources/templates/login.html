@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | PetCareBook</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="login-page">
+<main class="login-shell">
+    <section class="login-card">
+        <div class="login-brand">
+            <div class="login-mark">PC</div>
+            <div>
+                <div class="login-brand-name">PetCareBook</div>
+                <div class="login-brand-subtitle">Pet Vaccination Reminder System</div>
+            </div>
+        </div>
+
+        <div class="login-heading">
+            <p class="eyebrow">Secure access</p>
+            <h1>Welcome back</h1>
+            <p>Sign in to manage owners, pets, vaccine types and vaccination records.</p>
+        </div>
+
+        <div th:if="${param.error}" class="login-alert login-alert-error">
+            <strong>Login failed</strong>
+            <span>Invalid username or password. Please try again.</span>
+        </div>
+
+        <div th:if="${param.logout}" class="login-alert login-alert-success">
+            <strong>Signed out</strong>
+            <span>You have been logged out successfully.</span>
+        </div>
+        <div th:if="${param.registered}" class="login-alert login-alert-success">
+            <strong>Account created</strong>
+            <span>Your account has been created. Sign in with your new credentials.</span>
+        </div>
+
+        <form method="post" action="/login" class="login-form">
+            <div class="field">
+                <label for="username">Username</label>
+                <input id="username" name="username" type="text" required autocomplete="username"
+                       placeholder="Enter username">
+            </div>
+
+            <div class="field">
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" required autocomplete="current-password"
+                       placeholder="Enter password">
+            </div>
+
+            <button class="btn btn-primary login-submit" type="submit">Sign In</button>
+        </form>
+        </div>
+
+        <div class="login-register-link">
+            New to PetCareBook?
+            <a href="/register">Create an account</a>
+        </div>
+        <div class="demo-hint">
+            Demo account: <strong>admin</strong> / <strong>admin123</strong>
+        </div>
+        <p class="login-footer">Academic project • Spring Boot • MySQL • Thymeleaf</p>
+    </section>
+</main>
+</body>
+</html>

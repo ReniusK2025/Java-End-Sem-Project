@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pets | PetCareBook</title><link rel="stylesheet" th:href="@{/css/style.css}"></head>
+<body><div class="page">
+<div th:if="${successMessage}" class="notice notice-success"><span class="notice-icon">✓</span><div><strong>Success</strong><span th:text="${successMessage}">Saved successfully.</span></div></div>
+<div th:if="${errorMessage}" class="notice notice-error"><span class="notice-icon">!</span><div><strong>Action failed</strong><span th:text="${errorMessage}">Something went wrong.</span></div></div>
+
+<nav class="navbar"><a class="brand" href="/"><span class="brand-mark">PC</span><span>PetCareBook</span></a>
+<div class="user-welcome" th:if="${session.loggedInFullName != null}" th:text="${session.loggedInFullName}">User</div><div class="nav-links"><a href="/">Dashboard</a><a href="/owners">Owners</a><a class="active" href="/pets">Pets</a><a href="/vaccines">Vaccine Types</a><form class="nav-logout" method="post" action="/logout">
+                <button type="submit" title="Sign out">Sign out</button>
+            </form></div></nav>
+
+<p class="eyebrow">Pet registration</p><h1 class="page-heading">Pets & vaccination records</h1>
+<p class="subtitle"><span class="account-scope">Only records belonging to your signed-in account are shown.</span> Create, update and remove pets. Use History to manage the vaccination records belonging to each pet.</p>
+
+<div class="card form-card" th:if="${editPet == null}">
+<h2>Register pet</h2><form method="post" action="/ui/pets">
+<div class="field"><label>Pet name</label><input name="petName" required maxlength="100" placeholder="e.g. Bruno"></div>
+<div class="field"><label>Species</label><input name="species" required maxlength="50" placeholder="Dog / Cat"></div>
+<div class="field"><label>Breed</label><input name="breed" required maxlength="80" placeholder="e.g. Labrador"></div>
+<div class="field"><label>Date of birth</label><input type="date" name="dateOfBirth" required></div>
+<div class="field"><label>Owner ID</label><input type="number" name="ownerId" min="1" required placeholder="Create owner first"></div>
+<div class="form-actions"><button class="btn btn-primary" type="submit">Register Pet</button></div>
+</form></div>
+
+<div class="card form-card" th:if="${editPet != null}">
+<h2>Edit pet</h2><p class="form-note">Updating pet ID <strong th:text="${editPet.petId}">1</strong>.</p>
+<form method="post" th:action="@{'/ui/pets/' + ${editPet.petId} + '/update'}">
+<div class="field"><label>Pet name</label><input name="petName" required maxlength="100" th:value="${editPet.petName}"></div>
+<div class="field"><label>Species</label><input name="species" required maxlength="50" th:value="${editPet.species}"></div>
+<div class="field"><label>Breed</label><input name="breed" required maxlength="80" th:value="${editPet.breed}"></div>
+<div class="field"><label>Date of birth</label><input type="date" name="dateOfBirth" required th:value="${editPet.dateOfBirth}"></div>
+<div class="field"><label>Owner ID</label><input type="number" name="ownerId" min="1" required th:value="${editPet.ownerId}"></div>
+<div class="form-actions"><button class="btn btn-primary" type="submit">Save Changes</button><a class="btn btn-secondary" href="/pets">Cancel</a></div>
+</form></div>
+
+<h2 class="section-title">Registered pets</h2>
+<div th:if="${#lists.isEmpty(pets)}" class="card empty"><h3>No pets registered</h3><p>Add an owner and register a pet above.</p></div>
+<div th:unless="${#lists.isEmpty(pets)}" class="table-wrap"><table><thead><tr><th>ID</th><th>Pet</th><th>Species / Breed</th><th>Owner</th><th>Actions</th></tr></thead>
+<tbody><tr th:each="p : ${pets}">
+<td><span class="id-badge" th:text="${p.petId}">1</span></td><td class="food-name" th:text="${p.petName}">Bruno</td>
+<td th:text="${p.species + ' / ' + p.breed}">Dog / Labrador</td><td th:text="${p.ownerName + ' (#' + p.ownerId + ')'}">Arun (#1)</td>
+<td><div class="row-actions"><a class="btn btn-small btn-secondary" th:href="@{'/pets?edit=' + ${p.petId}}">Edit</a>
+<a class="btn btn-small btn-secondary" th:href="@{'/pets/' + ${p.petId}}">History</a>
+<form method="post" th:action="@{'/ui/pets/' + ${p.petId} + '/delete'}" onsubmit="return confirm('Delete this pet and its vaccination history?');">
+<button class="btn btn-small btn-danger" type="submit">Delete</button></form></div></td>
+</tr></tbody></table></div>
+
+<h2 class="section-title">Record vaccination</h2>
+<div class="card">
+<div th:if="${#lists.isEmpty(pets)}" class="empty"><p>Register a pet first.</p></div>
+<form th:each="p : ${pets}" method="post" th:action="@{'/ui/pets/' + ${p.petId} + '/vaccinations'}" class="vaccination-form">
+<h3 th:text="${p.petName + ' (Pet ID ' + p.petId + ')'}">Bruno</h3>
+<div class="form-row"><div class="field"><label>Vaccination date</label><input type="date" name="vaccinationDate" required></div>
+<div class="field"><label>Vaccine type</label><select name="vaccineTypeId" required><option value="">Select</option><option th:each="v : ${vaccines}" th:value="${v.vaccineTypeId}" th:text="${v.vaccineName + ' — ' + v.intervalDays + ' days'}">Rabies — 365 days</option></select></div>
+<div class="field"><label>Notes</label><input name="notes" maxlength="255" placeholder="Optional"></div></div>
+<button class="btn btn-success" type="submit">Record Vaccination</button>
+</form></div>
+<div class="footer">REST CRUD is also available under /api/pets and /api/vaccinations.</div>
+</div></body></html>

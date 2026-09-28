@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>PetCareBook | Dashboard</title><link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div class="page">
+    <div th:if="${successMessage}" class="notice notice-success"><span class="notice-icon">✓</span><div><strong>Success</strong><span th:text="${successMessage}">Saved successfully.</span></div></div>
+    <div th:if="${errorMessage}" class="notice notice-error"><span class="notice-icon">!</span><div><strong>Could not save</strong><span th:text="${errorMessage}">Something went wrong.</span></div></div>
+
+    <nav class="navbar">
+        <a class="brand" href="/"><span class="brand-mark">PC</span><span>PetCareBook</span></a>
+        <div class="user-welcome" th:if="${session.loggedInFullName != null}" th:text="${session.loggedInFullName}">User</div><div class="nav-links"><a class="active" href="/">Dashboard</a><a href="/owners">Owners</a><a href="/pets">Pets</a><a href="/vaccines">Vaccine Types</a><a href="/api/vaccinations/due">REST: Due</a>
+<form class="nav-logout" method="post" action="/logout">
+    <button type="submit" title="Sign out">Sign out</button>
+</form></div>
+    </nav>
+
+    <section class="hero">
+        <p class="eyebrow">Pet vaccination reminder system</p>
+        <h1>Keep every pet's vaccination record in one place.</h1>
+        <p>Register pets and owners, record vaccination events, calculate the next due date from the vaccine interval, and find vaccinations due in the next 7 days.</p>
+    </section>
+
+    <section class="stats">
+        <div class="stat"><div class="stat-icon">OWN</div><div class="stat-value" th:text="${ownerCount}">0</div><div class="stat-label">Owners</div></div>
+        <div class="stat"><div class="stat-icon">PET</div><div class="stat-value" th:text="${petCount}">0</div><div class="stat-label">Pets</div></div>
+        <div class="stat"><div class="stat-icon">DUE</div><div class="stat-value" th:text="${dueCount}">0</div><div class="stat-label">Vaccinations due in 7 days</div></div>
+    </section>
+
+    <h2 class="section-title">Due soon</h2>
+    <div th:if="${#lists.isEmpty(dueVaccinations)}" class="card empty"><div class="empty-icon">OK</div><h3>No vaccinations due in the next 7 days</h3><p>The dashboard checks today's date through seven days from today.</p></div>
+    <div th:unless="${#lists.isEmpty(dueVaccinations)}" class="table-wrap">
+        <table><thead><tr><th>Pet</th><th>Owner</th><th>Vaccine</th><th>Next due</th><th>Record ID</th></tr></thead>
+        <tbody><tr th:each="v : ${dueVaccinations}">
+            <td class="food-name" th:text="${v.petName}">Buddy</td>
+            <td th:text="${v.ownerName}">Owner</td>
+            <td th:text="${v.vaccineName}">Rabies</td>
+            <td><span class="badge badge-yes" th:text="${v.nextDueDate}">2026-10-03</span></td>
+            <td th:text="${v.vaccinationId}">1</td>
+        </tr></tbody></table>
+    </div>
+
+    <div class="actions form-actions">
+        <a class="btn btn-primary" href="/owners">Manage Owners</a>
+        <a class="btn btn-secondary" href="/pets">Manage Pets & Vaccinations</a>
+        <a class="btn btn-secondary" href="/vaccines">Manage Vaccine Types</a>
+    </div>
+    <div class="footer">PetCareBook • Spring Boot + Spring Data JPA + MySQL + Thymeleaf</div>
+</div>
+</body>
+</html>

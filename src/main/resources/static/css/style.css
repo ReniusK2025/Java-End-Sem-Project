@@ -1,0 +1,1159 @@
+/* =========================================================
+   PetCareBook — "Vaccination Card" UI
+   Palette: Spruce + Teal + Marigold on a cool mint paper
+   (Visual layer only: layout structure and class names are
+   unchanged, so all templates and backend work as before.)
+   ========================================================= */
+
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&display=swap");
+
+*{box-sizing:border-box}
+
+:root{
+  /* kept variable names so nothing else needs to change */
+  --navy:#0b3533;            /* spruce ink (headings, hero) */
+  --navy-2:#134a47;
+  --blue:#0f766e;            /* primary teal */
+  --blue-dark:#0a5c56;
+  --blue-soft:#e3f3ef;
+  --green:#2f7d3b;
+  --green-soft:#eaf6ea;
+  --red:#c8433f;
+  --red-soft:#fdeeed;
+  --amber:#a86b00;
+  --amber-soft:#fff3d1;
+  --gold:#f2a900;            /* marigold accent */
+  --bg:#eff5f3;
+  --surface:#ffffff;
+  --surface-alt:#f6faf9;
+  --text:#132a29;
+  --muted:#5c7371;
+  --muted-dark:#3f5654;
+  --border:#d3e2de;
+  --border-strong:#a9c3bd;
+  --shadow:0 2px 0 rgba(11,53,51,.06);
+  --shadow-sm:0 1px 0 rgba(11,53,51,.05);
+  --radius:10px;
+  --font-display:"Bricolage Grotesque","Trebuchet MS","Segoe UI",sans-serif;
+  --font-body:"Figtree",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+}
+
+html{scroll-behavior:smooth}
+
+body{
+  margin:0;
+  min-height:100vh;
+  overflow-x:hidden;
+  font-family:var(--font-body);
+  color:var(--text);
+  background:var(--bg) url("../images/pets-bg.svg") repeat top left / 560px 560px fixed;
+  font-size:15px;
+  line-height:1.6;
+}
+
+h1,h2,h3{font-family:var(--font-display)}
+
+a{color:inherit}
+
+:focus-visible{
+  outline:3px solid var(--gold);
+  outline-offset:2px;
+}
+
+.page{
+  width:min(1160px,calc(100% - 40px));
+  margin:0 auto;
+  padding:18px 0 55px;
+}
+
+/* ---------------- Navigation ---------------- */
+
+.navbar{
+  position:sticky;
+  top:10px;
+  z-index:20;
+  min-height:62px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:24px;
+  padding:8px 10px 8px 12px;
+  margin-bottom:30px;
+  background:var(--navy);
+  border-radius:999px;
+  box-shadow:0 8px 22px rgba(11,53,51,.18);
+}
+
+.brand{
+  text-decoration:none;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  color:#fff;
+  font-family:var(--font-display);
+  font-size:18px;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+.brand-mark{
+  width:38px;
+  height:38px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:var(--gold);
+  color:var(--navy);
+  font-family:var(--font-display);
+  font-size:13px;
+  font-weight:800;
+  letter-spacing:.3px;
+}
+
+.nav-links{
+  display:flex;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:2px;
+}
+
+.nav-links a{
+  text-decoration:none;
+  color:#b9d4cf;
+  font-size:13.5px;
+  font-weight:600;
+  padding:9px 15px;
+  border-radius:999px;
+  transition:background .15s ease,color .15s ease;
+}
+
+.nav-links a:hover{
+  background:rgba(255,255,255,.10);
+  color:#fff;
+}
+
+.nav-links a.active{
+  color:var(--navy);
+  background:#fff;
+  box-shadow:none;
+}
+
+/* ---------------- Typography ---------------- */
+
+.eyebrow{
+  margin:0 0 8px;
+  color:var(--blue-dark);
+  font-size:13.5px;
+  font-weight:700;
+  letter-spacing:0;
+  text-transform:none;
+}
+
+.page-heading{
+  margin:0 0 8px;
+  color:var(--navy);
+  font-size:clamp(32px,4.2vw,46px);
+  font-weight:800;
+  line-height:1.08;
+  letter-spacing:-1px;
+}
+
+.subtitle{
+  max-width:760px;
+  margin:0 0 26px;
+  color:var(--muted);
+  line-height:1.7;
+}
+
+.section-title{
+  margin:34px 0 14px;
+  color:var(--navy);
+  font-size:24px;
+  font-weight:700;
+  line-height:1.25;
+  letter-spacing:-.3px;
+}
+
+/* ---------------- Dashboard hero ---------------- */
+
+.hero{
+  position:relative;
+  overflow:hidden;
+  padding:46px 48px 48px;
+  margin-bottom:18px;
+  border-radius:28px;
+  color:#fff;
+  background:
+    radial-gradient(circle at calc(100% - 139px) 50%,transparent 0 118px,rgba(255,255,255,.10) 119px 121px,transparent 122px 158px,rgba(242,169,0,.55) 159px 161px,transparent 162px 200px,rgba(255,255,255,.07) 201px 203px,transparent 204px),
+    var(--navy);
+  border:0;
+  box-shadow:0 14px 30px rgba(11,53,51,.16);
+}
+
+/* a vaccination "stamp" in the corner */
+.hero:after{
+  content:"";
+  position:absolute;
+  right:64px;
+  top:50%;
+  width:150px;
+  height:150px;
+  margin-top:-75px;
+  border-radius:50%;
+  border:3px dashed rgba(242,169,0,.85);
+  transform:rotate(-12deg);
+  pointer-events:none;
+}
+
+.hero .eyebrow{
+  color:var(--gold);
+}
+
+.hero h1{
+  position:relative;
+  z-index:1;
+  max-width:700px;
+  margin:0 0 14px;
+  color:#fff;
+  font-size:clamp(35px,5vw,54px);
+  font-weight:800;
+  line-height:1.03;
+  letter-spacing:-1.6px;
+}
+
+.hero p:not(.eyebrow){
+  position:relative;
+  z-index:1;
+  max-width:640px;
+  margin:0;
+  color:#c6dcd8;
+  line-height:1.7;
+}
+
+.hero .eyebrow{position:relative;z-index:1}
+
+/* ---------------- Stats (one joined strip) ---------------- */
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:0;
+  overflow:hidden;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+}
+
+.stat{
+  position:relative;
+  padding:22px 24px;
+  background:transparent;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+}
+
+.stat + .stat{
+  border-left:1px dashed var(--border-strong);
+}
+
+.stat:before{
+  display:none;
+}
+
+.stat-icon{
+  display:inline-grid;
+  place-items:center;
+  height:24px;
+  padding:0 9px;
+  margin-bottom:12px;
+  border-radius:999px;
+  background:var(--amber-soft);
+  color:var(--amber);
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:.6px;
+}
+
+.stat-value{
+  color:var(--navy);
+  font-family:var(--font-display);
+  font-size:44px;
+  font-weight:800;
+  line-height:1;
+  letter-spacing:-1px;
+}
+
+.stat-label{
+  margin-top:8px;
+  color:var(--muted);
+  font-size:13px;
+  font-weight:600;
+}
+
+/* ---------------- Cards / Forms ---------------- */
+
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:30px;
+}
+
+.form-card{
+  width:100%;
+  max-width:840px;
+  margin:0 auto;
+  border-top:4px solid var(--blue);
+}
+
+.form-card h2{
+  margin:0 0 26px;
+  color:var(--navy);
+  font-size:26px;
+  font-weight:700;
+  line-height:1.2;
+  letter-spacing:-.4px;
+}
+
+.form-card h2:before{
+  display:none;
+}
+
+.field{
+  margin-bottom:22px;
+}
+
+.field label{
+  display:block;
+  margin:0 0 7px;
+  color:var(--muted-dark);
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:0;
+  text-transform:none;
+}
+
+.field input,
+.field select,
+.field textarea{
+  display:block;
+  width:100%;
+  min-width:0;
+  padding:12px 14px;
+  border:1.5px solid var(--border-strong);
+  border-radius:8px;
+  outline:none;
+  background:var(--surface-alt);
+  color:var(--text);
+  font:inherit;
+  transition:border-color .15s ease,box-shadow .15s ease,background .15s ease;
+}
+
+.field textarea{
+  min-height:100px;
+  resize:vertical;
+  line-height:1.5;
+}
+
+.field input::placeholder,
+.field textarea::placeholder{
+  color:#8ba5a1;
+}
+
+.field input:focus,
+.field select:focus,
+.field textarea:focus{
+  background:#fff;
+  border-color:var(--blue);
+  box-shadow:0 0 0 4px rgba(15,118,110,.14);
+}
+
+.field small{
+  display:block;
+  margin-top:6px;
+  color:var(--muted);
+  font-size:12px;
+  line-height:1.45;
+}
+
+.form-row{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:16px;
+}
+
+.form-actions{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:12px;
+  margin-top:8px;
+  padding-top:22px;
+  border-top:1px dashed var(--border-strong);
+}
+
+.form-actions:before{display:none}
+
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  min-height:46px;
+  padding:11px 22px;
+  border:1.5px solid transparent;
+  border-radius:999px;
+  font:inherit;
+  font-size:14px;
+  font-weight:700;
+  text-decoration:none;
+  cursor:pointer;
+  transition:background .15s ease,border-color .15s ease,color .15s ease;
+  box-shadow:none;
+}
+
+.btn:hover{
+  transform:none;
+  box-shadow:none;
+}
+
+.btn-primary{
+  color:#fff;
+  background:var(--blue);
+  border-color:var(--blue);
+}
+
+.btn-primary:hover{
+  background:var(--navy);
+  border-color:var(--navy);
+}
+
+.btn-secondary{
+  color:var(--navy);
+  background:transparent;
+  border-color:var(--border-strong);
+}
+
+.btn-secondary:hover{
+  background:var(--blue-soft);
+  border-color:var(--blue);
+}
+
+.btn-success{
+  color:#fff;
+  background:var(--green);
+  border-color:var(--green);
+}
+
+/* ---------------- Tables ---------------- */
+
+.table-wrap{
+  overflow:auto;
+  margin-top:18px;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow-sm);
+}
+
+table{
+  width:100%;
+  min-width:650px;
+  border-collapse:collapse;
+  background:#fff;
+}
+
+th,td{
+  padding:14px 18px;
+  text-align:left;
+  border-bottom:1px solid #e3eeeb;
+}
+
+th{
+  color:var(--navy);
+  background:var(--blue-soft);
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:0;
+  text-transform:none;
+  border-bottom:2px solid var(--blue);
+}
+
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover{background:#f4faf8}
+
+.food-name{
+  color:var(--navy);
+  font-weight:700;
+}
+
+.id-badge{
+  display:inline-flex;
+  padding:3px 9px;
+  border-radius:999px;
+  background:var(--blue-soft);
+  color:var(--blue-dark);
+  font-size:12px;
+  font-weight:700;
+}
+
+.badge{
+  display:inline-flex;
+  padding:5px 11px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+}
+
+.badge-yes{
+  background:var(--amber-soft);
+  color:var(--amber);
+  border:1px solid #f4d98a;
+}
+
+/* ---------------- Messages ---------------- */
+
+.notice{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  padding:13px 16px;
+  margin:0 0 20px;
+  border:1px solid;
+  border-radius:12px;
+  font-size:13.5px;
+}
+
+.notice strong{
+  display:block;
+  margin-bottom:2px;
+}
+
+.notice-success{
+  color:#1d5b2a;
+  background:var(--green-soft);
+  border-color:#b9dfbf;
+}
+
+.notice-error{
+  color:#8f2f2b;
+  background:var(--red-soft);
+  border-color:#f3c4c1;
+}
+
+.notice-icon{
+  width:20px;
+  height:20px;
+  display:grid;
+  place-items:center;
+  flex:0 0 20px;
+  border-radius:50%;
+  font-size:11px;
+  font-weight:900;
+  background:currentColor;
+}
+
+.notice-icon{color:inherit}
+.notice-success .notice-icon{background:#2f7d3b;color:#fff}
+.notice-error .notice-icon{background:#c8433f;color:#fff}
+
+/* ---------------- Empty state ---------------- */
+
+.empty{
+  text-align:center;
+  color:var(--muted);
+  padding:46px 20px;
+  background:
+    repeating-linear-gradient(135deg,transparent 0 12px,rgba(15,118,110,.035) 12px 24px),
+    #fff;
+  border-style:dashed;
+  border-color:var(--border-strong);
+  box-shadow:none;
+}
+
+.empty h3{
+  margin:8px 0 4px;
+  color:var(--navy);
+  font-size:20px;
+  font-weight:700;
+}
+
+.empty-icon{
+  width:44px;
+  height:44px;
+  display:grid;
+  place-items:center;
+  margin:0 auto 8px;
+  border-radius:50%;
+  background:var(--blue-soft);
+  color:var(--blue-dark);
+  font-size:12px;
+  font-weight:800;
+}
+
+/* ---------------- Actions / footer ---------------- */
+
+.actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+.footer{
+  padding:30px 0 0;
+  color:var(--muted);
+  font-size:12px;
+  text-align:center;
+}
+
+/* ---------------- Pets / history ---------------- */
+
+.delete-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+}
+
+.delete-card{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:16px 18px;
+  background:#fff;
+  border:1px solid var(--border);
+  border-left:4px solid var(--gold);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow-sm);
+}
+
+.delete-card .food-info{
+  flex:1;
+}
+
+.delete-card h3{
+  margin:0 0 4px;
+  color:var(--navy);
+  font-size:17px;
+  font-weight:700;
+}
+
+.delete-card p{
+  margin:2px 0;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.action-icon{
+  width:44px;
+  height:44px;
+  display:grid;
+  place-items:center;
+  flex:0 0 44px;
+  border-radius:50%;
+  background:var(--blue-soft);
+  color:var(--blue-dark);
+  font-size:11px;
+  font-weight:800;
+}
+
+.vaccination-form{
+  padding:8px 0 24px;
+  margin-bottom:24px;
+  border-bottom:1px dashed var(--border-strong);
+}
+
+.vaccination-form:last-child{
+  padding-bottom:0;
+  margin-bottom:0;
+  border-bottom:0;
+}
+
+/* ---------------- Vaccine page ---------------- */
+
+.vaccine-hero{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:25px;
+  padding:34px 38px;
+  margin-bottom:18px;
+  border-radius:24px;
+  background:var(--blue-soft);
+  border:1px solid #c5e0da;
+  border-left:1px solid #c5e0da;
+  box-shadow:none;
+}
+
+.vaccine-hero h1{
+  margin:0 0 7px;
+  color:var(--navy);
+  font-size:40px;
+  font-weight:800;
+  line-height:1.1;
+  letter-spacing:-1px;
+}
+
+.vaccine-hero p:not(.eyebrow){
+  max-width:720px;
+  margin:0;
+  color:var(--muted-dark);
+  line-height:1.65;
+}
+
+.hero-vaccine-icon{
+  width:76px;
+  height:76px;
+  flex:0 0 76px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:var(--navy);
+  color:var(--gold);
+  border:3px dashed var(--gold);
+  font-family:var(--font-display);
+  font-size:13px;
+  font-weight:800;
+  letter-spacing:.5px;
+}
+
+.vaccine-intro{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:13px;
+  margin:0 0 22px;
+}
+
+.info-tile{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  min-height:96px;
+  padding:16px;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow-sm);
+}
+
+.info-tile strong{
+  display:block;
+  margin:1px 0 5px;
+  color:var(--navy);
+  font-size:14px;
+}
+
+.info-tile span{
+  display:block;
+  color:var(--muted);
+  font-size:12.5px;
+  line-height:1.5;
+}
+
+.info-icon{
+  width:36px;
+  height:36px;
+  flex:0 0 36px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:var(--amber-soft);
+  color:var(--amber);
+  font-size:10px;
+  font-weight:800;
+}
+
+.info-green .info-icon,
+.info-purple .info-icon,
+.info-orange .info-icon{
+  background:var(--amber-soft);
+}
+
+.vaccine-form-card{
+  max-width:840px;
+  margin:0 auto 36px;
+  padding:28px 30px 31px;
+}
+
+.form-heading{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding-bottom:18px;
+  margin-bottom:23px;
+  border-bottom:1px dashed var(--border-strong);
+}
+
+.form-heading-icon{
+  width:42px;
+  height:42px;
+  flex:0 0 42px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:var(--navy);
+  color:var(--gold);
+  font-size:13px;
+  font-weight:800;
+}
+
+.form-heading h2{
+  margin:0 0 2px;
+  color:var(--navy);
+  font-size:24px;
+  font-weight:700;
+}
+
+.form-heading p{
+  margin:0;
+  color:var(--muted);
+  font-size:13px;
+}
+
+.vaccine-form .field{
+  margin-bottom:23px;
+}
+
+.vaccine-form .field label{
+  margin-bottom:7px;
+}
+
+.vaccine-form .field label span{
+  color:var(--red);
+}
+
+.vaccine-form .field input,
+.vaccine-form .field textarea{
+  border-color:var(--border-strong);
+}
+
+.input-with-suffix{
+  position:relative;
+}
+
+.input-with-suffix input{
+  padding-right:62px!important;
+}
+
+.input-with-suffix span{
+  position:absolute;
+  top:50%;
+  right:14px;
+  transform:translateY(-50%);
+  color:var(--muted);
+  font-size:12px;
+  font-weight:700;
+  pointer-events:none;
+}
+
+.vaccine-form-actions{
+  margin-top:34px;
+  padding-top:20px;
+}
+
+.vaccine-add-btn{
+  min-width:185px;
+}
+
+.vaccine-add-btn span{
+  font-size:14px;
+}
+
+.section-heading-row{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:18px;
+  margin:0 0 13px;
+}
+
+.section-heading-row .section-title{
+  margin:0;
+}
+
+.count-pill{
+  padding:6px 13px;
+  border:1px solid var(--border-strong);
+  border-radius:999px;
+  background:#fff;
+  color:var(--muted);
+  font-size:12px;
+  font-weight:700;
+}
+
+.count-pill span{
+  color:var(--navy);
+  margin-right:3px;
+}
+
+.vaccine-table-card{
+  overflow:hidden;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow-sm);
+}
+
+.vaccine-table-wrap{
+  margin:0;
+  border:0;
+  border-radius:0;
+  box-shadow:none;
+}
+
+.vaccine-table{
+  min-width:900px;
+  table-layout:fixed;
+}
+
+.vaccine-table th,
+.vaccine-table td{
+  padding:14px 18px;
+}
+
+.vaccine-table .description-cell{
+  width:42%;
+  max-width:none;
+  color:var(--muted);
+  line-height:1.5;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  word-break:normal;
+  vertical-align:top;
+}
+
+.vaccine-table th,
+.vaccine-table td{
+  vertical-align:top;
+}
+
+.vaccine-table th:nth-child(1),
+.vaccine-table td:nth-child(1){width:7%;}
+
+.vaccine-table th:nth-child(2),
+.vaccine-table td:nth-child(2){width:17%;}
+
+.vaccine-table th:nth-child(3),
+.vaccine-table td:nth-child(3){width:12%;}
+
+.vaccine-table th:nth-child(5),
+.vaccine-table td:nth-child(5){width:190px;}
+
+.vaccine-table .vaccine-name{
+  display:flex;
+  align-items:center;
+  gap:9px;
+}
+
+.vaccine-dot{
+  width:9px;
+  height:9px;
+  flex:0 0 9px;
+  border-radius:50%;
+  background:var(--gold);
+}
+
+/* ---------------- Responsive ---------------- */
+
+@media(max-width:900px){
+  .vaccine-intro{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:780px){
+  .page{
+    width:min(100% - 24px,720px);
+    padding-top:12px;
+  }
+
+  .navbar{
+    position:relative;
+    top:0;
+    align-items:flex-start;
+    flex-direction:column;
+    gap:9px;
+    margin-bottom:24px;
+    padding:12px;
+    border-radius:22px;
+  }
+
+  .nav-links{
+    width:100%;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+  }
+
+  .nav-links a{
+    text-align:center;
+  }
+
+  .hero{
+    padding:34px 26px;
+    border-radius:22px;
+  }
+
+  .hero:after{
+    display:none;
+  }
+
+  .stats,
+  .form-row,
+  .delete-grid{
+    grid-template-columns:1fr;
+  }
+
+  .stat + .stat{
+    border-left:0;
+    border-top:1px dashed var(--border-strong);
+  }
+
+  .card{
+    padding:24px 21px;
+  }
+
+  .vaccine-hero{
+    padding:28px 24px;
+  }
+
+  .hero-vaccine-icon{
+    display:none;
+  }
+
+  .form-actions .btn{
+    width:auto;
+  }
+}
+
+@media(max-width:520px){
+  .page{
+    width:calc(100% - 18px);
+  }
+
+  .nav-links{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .hero{
+    padding:28px 21px;
+    border-radius:18px;
+  }
+
+  .hero h1{
+    font-size:34px;
+  }
+
+  .card{
+    padding:23px 18px;
+  }
+
+  .form-actions{
+    flex-direction:column;
+    align-items:stretch;
+  }
+
+  .form-actions .btn,
+  form > .btn,
+  .vaccine-add-btn{
+    width:100%;
+  }
+
+  .vaccine-form-actions{
+    margin-top:30px;
+  }
+
+  .vaccine-hero h1{
+    font-size:31px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *{transition:none!important}
+}
+
+
+.form-note{margin:-10px 0 22px;color:#687386;font-size:13px;line-height:1.6}
+.row-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.row-actions form{margin:0}
+.btn-small{min-height:34px;padding:8px 12px;border-radius:8px;font-size:12px;box-shadow:none}
+.btn-small:hover{transform:translateY(-1px)}
+.btn-danger{color:#a52f49;background:#fff1f3;border:1px solid #f0c1cd}
+.btn-danger:hover{background:#ffe6eb;box-shadow:0 6px 14px rgba(169,47,73,.10)}
+.table-wrap td:last-child{white-space:nowrap}
+.vaccine-table td:last-child{width:190px}
+@media(max-width:780px){
+  .row-actions{align-items:stretch}
+  .row-actions .btn,.row-actions form{width:auto}
+}
+
+
+/* Authentication and navigation */
+.navbar{gap:20px}
+.nav-links{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.nav-logout{margin-left:6px}
+.nav-logout button{border:1px solid #d6dce5;background:#fff;color:#344054;border-radius:7px;padding:9px 13px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.nav-logout button:hover{background:#f4f6f8;border-color:#b9c2cf;color:#162a46}
+
+.login-page{min-height:100vh;margin:0;background:linear-gradient(135deg,#eef3f8 0%,#f8fafc 48%,#e9eef5 100%);display:flex;align-items:center;justify-content:center;padding:32px 18px}
+.login-shell{width:100%;max-width:470px}
+.login-card{background:#fff;border:1px solid #d9e0e8;border-radius:16px;box-shadow:0 18px 50px rgba(26,43,66,.12);padding:38px}
+.login-brand{display:flex;align-items:center;gap:14px;padding-bottom:28px;border-bottom:1px solid #e6eaf0}
+.login-mark{width:50px;height:50px;border-radius:10px;background:#173b67;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;letter-spacing:.5px}
+.login-brand-name{font-size:21px;font-weight:800;color:#172b45}
+.login-brand-subtitle{font-size:12px;color:#778397;margin-top:3px}
+.login-heading{padding:30px 0 20px}
+.login-heading .eyebrow{margin-bottom:8px}
+.login-heading h1{font-size:31px;line-height:1.15;margin:0 0 10px;color:#172b45}
+.login-heading p:not(.eyebrow){margin:0;color:#667085;line-height:1.65;font-size:14px}
+.login-form .field{margin-bottom:19px}
+.login-form label{color:#344054}
+.login-form input{width:100%;box-sizing:border-box;min-height:48px}
+.login-submit{width:100%;min-height:48px;margin-top:5px;font-size:14px}
+.login-alert{display:flex;flex-direction:column;gap:3px;border-radius:8px;padding:12px 14px;margin-bottom:20px;font-size:13px;line-height:1.45}
+.login-alert-error{background:#fff3f4;border:1px solid #f0c7ce;color:#8e2638}
+.login-alert-success{background:#eef8f2;border:1px solid #c6e6d1;color:#22643b}
+.demo-credentials{margin-top:25px;padding:15px 16px;background:#f7f9fb;border:1px solid #e1e6ed;border-radius:9px;color:#5c6878;font-size:12px;line-height:1.8}
+.demo-label{display:block;color:#344054;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
+.login-footer{text-align:center;color:#98a2b3;font-size:11px;margin:24px 0 0}
+@media(max-width:560px){
+  .login-card{padding:26px 22px}
+  .login-page{padding:18px 12px}
+  .nav-logout{margin-left:0}
+}
+
+.login-register-link{text-align:center;margin-top:23px;padding-top:20px;border-top:1px solid #e6eaf0;color:#667085;font-size:13px}
+.login-register-link a{color:#173b67;font-weight:800;text-decoration:none;margin-left:5px}
+.login-register-link a:hover{text-decoration:underline}
+.demo-hint{text-align:center;margin-top:13px;color:#98a2b3;font-size:11px}
+.demo-hint strong{color:#667085}
+.register-card .login-heading{padding-bottom:18px}
+
+.user-welcome{font-size:12px;font-weight:700;color:#667085;margin-left:auto}
+@media(max-width:780px){.user-welcome{width:100%;margin-left:0}}
+
+.account-scope{display:inline-block;font-size:12px;font-weight:700;color:#173b67;background:#eef4fb;border:1px solid #d7e3f0;border-radius:6px;padding:5px 9px;margin-right:8px}
+.nav-logout button{white-space:nowrap}
+
+/* ---- Login page only: real dog & cat photos beside the sign-in card ---- */
+.login-shell{position:relative;z-index:1}
+.login-page::before,.login-page::after{
+  content:"";
+  position:fixed;
+  bottom:8vh;
+  width:clamp(190px,22vw,340px);
+  aspect-ratio:1/1.15;
+  border:6px solid #fff;
+  border-radius:24px;
+  background-repeat:no-repeat;
+  background-size:cover;
+  box-shadow:0 18px 40px rgba(26,43,66,.22);
+  z-index:0;
+  pointer-events:none;
+}
+.login-page::before{left:4vw;background-image:url("../images/login-dog.jpg");background-position:22% center;transform:rotate(-4deg)}
+.login-page::after{right:4vw;background-image:url("../images/login-cat.jpg");background-position:center;transform:rotate(4deg)}
+@media (max-width:1000px){
+  .login-page::before,.login-page::after{display:none}
+}

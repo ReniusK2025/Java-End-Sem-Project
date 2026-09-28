@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account | PetCareBook</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body class="login-page">
+<main class="login-shell">
+    <section class="login-card register-card">
+        <div class="login-brand">
+            <div class="login-mark">PC</div>
+            <div>
+                <div class="login-brand-name">PetCareBook</div>
+                <div class="login-brand-subtitle">Pet Vaccination Reminder System</div>
+            </div>
+        </div>
+
+        <div class="login-heading">
+            <p class="eyebrow">New account</p>
+            <h1>Create your account</h1>
+            <p>Register a user account to access the PetCareBook management system.</p>
+        </div>
+
+        <div th:if="${param.error}" class="login-alert login-alert-error">
+            <strong th:if="${param.error[0] == 'exists'}">Account already exists</strong>
+            <strong th:unless="${param.error[0] == 'exists'}">Please check your details</strong>
+            <span th:if="${param.error[0] == 'exists'}">The username or email is already registered.</span>
+            <span th:if="${param.error[0] == 'mismatch'}">The two passwords do not match.</span>
+            <span th:if="${param.error[0] == 'validation'}">Use a valid name, email, username and a password of at least 6 characters.</span>
+        </div>
+
+        <form method="post" action="/register" class="login-form">
+            <div class="field">
+                <label for="fullName">Full name</label>
+                <input id="fullName" name="fullName" type="text" required maxlength="100"
+                       placeholder="e.g. Arun Kumar" autocomplete="name">
+            </div>
+
+            <div class="field">
+                <label for="username">Username</label>
+                <input id="username" name="username" type="text" required minlength="3" maxlength="50"
+                       placeholder="Choose a username" autocomplete="username">
+            </div>
+
+            <div class="field">
+                <label for="email">Email address</label>
+                <input id="email" name="email" type="email" required maxlength="150"
+                       placeholder="arun@example.com" autocomplete="email">
+            </div>
+
+            <div class="field">
+                <label for="password">Password</label>
+                <input id="password" name="password" type="password" required minlength="6"
+                       placeholder="At least 6 characters" autocomplete="new-password">
+            </div>
+
+            <div class="field">
+                <label for="confirmPassword">Confirm password</label>
+                <input id="confirmPassword" name="confirmPassword" type="password" required minlength="6"
+                       placeholder="Re-enter your password" autocomplete="new-password">
+            </div>
+
+            <button class="btn btn-primary login-submit" type="submit">Create Account</button>
+        </form>
+
+        <div class="login-register-link">
+            Already have an account?
+            <a href="/login">Back to Sign In</a>
+        </div>
+
+        <p class="login-footer">Your password is stored as a BCrypt hash.</p>
+    </section>
+</main>
+</body>
+</html>

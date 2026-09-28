@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vaccination History | PetCareBook</title><link rel="stylesheet" th:href="@{/css/style.css}"></head>
+<body><div class="page">
+<div th:if="${successMessage}" class="notice notice-success"><span class="notice-icon">✓</span><div><strong>Success</strong><span th:text="${successMessage}">Saved successfully.</span></div></div>
+<div th:if="${errorMessage}" class="notice notice-error"><span class="notice-icon">!</span><div><strong>Action failed</strong><span th:text="${errorMessage}">Something went wrong.</span></div></div>
+
+<nav class="navbar"><a class="brand" href="/"><span class="brand-mark">PC</span><span>PetCareBook</span></a>
+<div class="user-welcome" th:if="${session.loggedInFullName != null}" th:text="${session.loggedInFullName}">User</div><div class="nav-links"><a href="/">Dashboard</a><a href="/owners">Owners</a><a class="active" href="/pets">Pets</a><a href="/vaccines">Vaccine Types</a><form class="nav-logout" method="post" action="/logout">
+                <button type="submit" title="Sign out">Sign out</button>
+            </form></div></nav>
+
+<p class="eyebrow">Complete history</p><h1 class="page-heading" th:text="${pet.petName} + ' — vaccination history'">Bruno — vaccination history</h1>
+<p class="subtitle" th:text="${pet.species + ' • ' + pet.breed + ' • DOB ' + pet.dateOfBirth + ' • Owner: ' + pet.ownerName}">Dog</p>
+
+<div class="card form-card" th:if="${editVaccination != null}">
+<h2>Edit vaccination</h2><p class="form-note">Updating vaccination record ID <strong th:text="${editVaccination.vaccinationId}">1</strong>. The next due date is recalculated by the server.</p>
+<form method="post" th:action="@{'/ui/vaccinations/' + ${editVaccination.vaccinationId} + '/update'}">
+<div class="field"><label>Vaccination date</label><input type="date" name="vaccinationDate" required th:value="${editVaccination.vaccinationDate}"></div>
+<div class="field"><label>Vaccine type</label><select name="vaccineTypeId" required><option th:each="v : ${vaccines}" th:value="${v.vaccineTypeId}" th:selected="${v.vaccineTypeId == editVaccination.vaccineTypeId}" th:text="${v.vaccineName + ' — ' + v.intervalDays + ' days'}">Rabies — 365 days</option></select></div>
+<div class="field"><label>Notes</label><input name="notes" maxlength="255" th:value="${editVaccination.notes}"></div>
+<div class="form-actions"><button class="btn btn-primary" type="submit">Save Changes</button><a class="btn btn-secondary" th:href="@{'/pets/' + ${pet.petId}}">Cancel</a></div>
+</form></div>
+
+<h2 class="section-title">Vaccination history</h2>
+<div th:if="${#lists.isEmpty(history)}" class="card empty"><h3>No vaccination records</h3><p>Record the first vaccination from the Pets page.</p></div>
+<div th:unless="${#lists.isEmpty(history)}" class="table-wrap"><table><thead><tr><th>ID</th><th>Vaccine</th><th>Vaccination date</th><th>Next due</th><th>Notes</th><th>Actions</th></tr></thead>
+<tbody><tr th:each="v : ${history}">
+<td><span class="id-badge" th:text="${v.vaccinationId}">1</span></td><td class="food-name" th:text="${v.vaccineName}">Rabies</td>
+<td th:text="${v.vaccinationDate}">2026-09-01</td><td><span class="badge badge-yes" th:text="${v.nextDueDate}">2027-09-01</span></td>
+<td th:text="${v.notes != null ? v.notes : '—'}">Annual</td>
+<td><div class="row-actions"><a class="btn btn-small btn-secondary" th:href="@{'/pets/' + ${pet.petId} + '?edit=' + ${v.vaccinationId}}">Edit</a>
+<form method="post" th:action="@{'/ui/vaccinations/' + ${v.vaccinationId} + '/delete'}" onsubmit="return confirm('Delete this vaccination record?');">
+<button class="btn btn-small btn-danger" type="submit">Delete</button></form></div></td>
+</tr></tbody></table></div>
+<div class="actions form-actions"><a class="btn btn-secondary" href="/pets">Back to Pets</a><a class="btn btn-secondary" th:href="@{'/api/pets/' + ${pet.petId} + '/vaccination-history'}">Open JSON API</a></div>
+</div></body></html>

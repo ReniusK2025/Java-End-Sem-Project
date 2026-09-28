@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Owners | PetCareBook</title><link rel="stylesheet" th:href="@{/css/style.css}"></head>
+<body><div class="page">
+<div th:if="${successMessage}" class="notice notice-success"><span class="notice-icon">✓</span><div><strong>Success</strong><span th:text="${successMessage}">Saved successfully.</span></div></div>
+<div th:if="${errorMessage}" class="notice notice-error"><span class="notice-icon">!</span><div><strong>Action failed</strong><span th:text="${errorMessage}">Something went wrong.</span></div></div>
+
+<nav class="navbar"><a class="brand" href="/"><span class="brand-mark">PC</span><span>PetCareBook</span></a>
+<div class="user-welcome" th:if="${session.loggedInFullName != null}" th:text="${session.loggedInFullName}">User</div><div class="nav-links"><a href="/">Dashboard</a><a class="active" href="/owners">Owners</a><a href="/pets">Pets</a><a href="/vaccines">Vaccine Types</a><form class="nav-logout" method="post" action="/logout">
+                <button type="submit" title="Sign out">Sign out</button>
+            </form></div></nav>
+
+<p class="eyebrow">Owner management</p><h1 class="page-heading">Owners</h1>
+<p class="subtitle"><span class="account-scope">Only records belonging to your signed-in account are shown.</span> Create, update and remove pet-owner records. An owner must have no registered pets before deletion.</p>
+
+<div class="card form-card" th:if="${editOwner == null}">
+<h2>Add owner</h2>
+<form method="post" action="/ui/owners">
+<div class="field"><label>Name</label><input name="ownerName" required maxlength="100" placeholder="e.g. Arun Kumar"></div>
+<div class="field"><label>Email</label><input type="email" name="email" required maxlength="150" placeholder="arun@example.com"></div>
+<div class="field"><label>Phone</label><input name="phone" maxlength="20" placeholder="Optional"></div>
+<div class="form-actions"><button class="btn btn-primary" type="submit">Add Owner</button></div>
+</form></div>
+
+<div class="card form-card" th:if="${editOwner != null}">
+<h2>Edit owner</h2>
+<p class="form-note">Updating owner ID <strong th:text="${editOwner.ownerId}">1</strong>.</p>
+<form method="post" th:action="@{'/ui/owners/' + ${editOwner.ownerId} + '/update'}">
+<div class="field"><label>Name</label><input name="ownerName" required maxlength="100" th:value="${editOwner.ownerName}"></div>
+<div class="field"><label>Email</label><input type="email" name="email" required maxlength="150" th:value="${editOwner.email}"></div>
+<div class="field"><label>Phone</label><input name="phone" maxlength="20" th:value="${editOwner.phone}"></div>
+<div class="form-actions"><button class="btn btn-primary" type="submit">Save Changes</button><a class="btn btn-secondary" href="/owners">Cancel</a></div>
+</form></div>
+
+<h2 class="section-title">Registered owners</h2>
+<div th:if="${#lists.isEmpty(owners)}" class="card empty"><h3>No owners yet</h3><p>Add the first owner above.</p></div>
+<div th:unless="${#lists.isEmpty(owners)}" class="table-wrap"><table><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Actions</th></tr></thead>
+<tbody><tr th:each="o : ${owners}">
+<td><span class="id-badge" th:text="${o.ownerId}">1</span></td>
+<td class="food-name" th:text="${o.ownerName}">Arun</td><td th:text="${o.email}">arun@example.com</td><td th:text="${o.phone != null ? o.phone : '—'}">9999999999</td>
+<td><div class="row-actions"><a class="btn btn-small btn-secondary" th:href="@{'/owners?edit=' + ${o.ownerId}}">Edit</a>
+<form method="post" th:action="@{'/ui/owners/' + ${o.ownerId} + '/delete'}" onsubmit="return confirm('Delete this owner? The owner must have no pets.');">
+<button class="btn btn-small btn-danger" type="submit">Delete</button></form></div></td>
+</tr></tbody></table></div>
+</div></body></html>
